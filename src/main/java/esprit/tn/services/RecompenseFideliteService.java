@@ -18,7 +18,7 @@ public class RecompenseFideliteService {
 
     // Method to add a RecompenseFidelite
     public void ajouter(RecompenseFidelite rf) {
-        String req = "INSERT INTO recompensefidelite (nomRecompense, descriptionRecompense, pointsRequis, typeRecompense, dateExpiration) VALUES (?, ?, ?, ?, ?)";
+        String req = "INSERT INTO recompensefidelite (nomRecompense, descriptionRecompense, pointsRequis, typeRecompense, dateExpiration, idUtilisateur) VALUES (?, ?, ?, ?, ?, ?)";
         try {
             PreparedStatement stm = cnx.prepareStatement(req);
             stm.setString(1, rf.getNomRecompense());
@@ -26,6 +26,7 @@ public class RecompenseFideliteService {
             stm.setInt(3, rf.getPointsRequis());
             stm.setString(4, rf.getTypeRecompense());
             stm.setTimestamp(5, rf.getDateExpiration());
+            stm.setInt(6, rf.getIdUtilisateur()); // Set the foreign key
 
             stm.executeUpdate();
         } catch (SQLException e) {
@@ -35,7 +36,7 @@ public class RecompenseFideliteService {
 
     // Method to modify a RecompenseFidelite
     public void modifier(RecompenseFidelite rf) {
-        String req = "UPDATE recompensefidelite SET nomRecompense = ?, descriptionRecompense = ?, pointsRequis = ?, typeRecompense = ?, dateExpiration = ? WHERE idRecompense = ?";
+        String req = "UPDATE recompensefidelite SET nomRecompense = ?, descriptionRecompense = ?, pointsRequis = ?, typeRecompense = ?, dateExpiration = ?, idUtilisateur = ? WHERE idRecompense = ?";
         try {
             PreparedStatement stm = cnx.prepareStatement(req);
             stm.setString(1, rf.getNomRecompense());
@@ -43,7 +44,8 @@ public class RecompenseFideliteService {
             stm.setInt(3, rf.getPointsRequis());
             stm.setString(4, rf.getTypeRecompense());
             stm.setTimestamp(5, rf.getDateExpiration());
-            stm.setInt(6, rf.getIdRecompense());
+            stm.setInt(6, rf.getIdUtilisateur()); // Set the foreign key
+            stm.setInt(7, rf.getIdRecompense());
 
             stm.executeUpdate();
         } catch (SQLException e) {
@@ -77,7 +79,8 @@ public class RecompenseFideliteService {
                         rs.getString("descriptionRecompense"),
                         rs.getInt("pointsRequis"),
                         rs.getString("typeRecompense"),
-                        rs.getTimestamp("dateExpiration")
+                        rs.getTimestamp("dateExpiration"),
+                        rs.getInt("idUtilisateur") // Get the foreign key reference
                 );
                 recompenses.add(rf);
             }
@@ -102,7 +105,8 @@ public class RecompenseFideliteService {
                         rs.getString("descriptionRecompense"),
                         rs.getInt("pointsRequis"),
                         rs.getString("typeRecompense"),
-                        rs.getTimestamp("dateExpiration")
+                        rs.getTimestamp("dateExpiration"),
+                        rs.getInt("idUtilisateur") // Get the foreign key reference
                 );
             }
         } catch (SQLException e) {

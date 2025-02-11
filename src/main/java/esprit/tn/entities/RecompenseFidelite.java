@@ -10,31 +10,21 @@ public class RecompenseFidelite {
     private int pointsRequis;
     private String typeRecompense;
     private Timestamp dateExpiration;
+    private int idUtilisateur;  // Foreign Key
 
-    // Default constructor (useful for frameworks like Hibernate)
-    public RecompenseFidelite() {
-    }
-
-    // Constructor without idRecompense (for cases where id is auto-generated in DB)
-    public RecompenseFidelite(String nomRecompense, String descriptionRecompense, int pointsRequis, String typeRecompense, Timestamp dateExpiration) {
-        this.nomRecompense = nomRecompense;
-        this.descriptionRecompense = descriptionRecompense;
-        this.pointsRequis = pointsRequis;
-        this.typeRecompense = typeRecompense;
-        this.dateExpiration = dateExpiration;
-    }
-
-    // Full constructor
-    public RecompenseFidelite(int idRecompense, String nomRecompense, String descriptionRecompense, int pointsRequis, String typeRecompense, Timestamp dateExpiration) {
+    // Constructor
+    public RecompenseFidelite(int idRecompense, String nomRecompense, String descriptionRecompense,
+                              int pointsRequis, String typeRecompense, Timestamp dateExpiration, int idUtilisateur) {
         this.idRecompense = idRecompense;
         this.nomRecompense = nomRecompense;
         this.descriptionRecompense = descriptionRecompense;
         this.pointsRequis = pointsRequis;
         this.typeRecompense = typeRecompense;
         this.dateExpiration = dateExpiration;
+        this.idUtilisateur = idUtilisateur;  // Set the foreign key
     }
 
-    // Getters and setters
+    // Getters and Setters
     public int getIdRecompense() {
         return idRecompense;
     }
@@ -83,21 +73,37 @@ public class RecompenseFidelite {
         this.dateExpiration = dateExpiration;
     }
 
-    // Equals and hashCode based on idRecompense
+    public int getIdUtilisateur() {
+        return idUtilisateur;
+    }
+
+    public void setIdUtilisateur(int idUtilisateur) {
+        this.idUtilisateur = idUtilisateur;
+    }
+
+    // equals() Method
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof RecompenseFidelite)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
         RecompenseFidelite that = (RecompenseFidelite) o;
-        return idRecompense == that.idRecompense;
+        return idRecompense == that.idRecompense &&
+                pointsRequis == that.pointsRequis &&
+                idUtilisateur == that.idUtilisateur &&
+                Objects.equals(nomRecompense, that.nomRecompense) &&
+                Objects.equals(descriptionRecompense, that.descriptionRecompense) &&
+                Objects.equals(typeRecompense, that.typeRecompense) &&
+                Objects.equals(dateExpiration, that.dateExpiration);
     }
 
+    // hashCode() Method
     @Override
     public int hashCode() {
-        return Objects.hash(idRecompense);
+        return Objects.hash(idRecompense, nomRecompense, descriptionRecompense, pointsRequis,
+                typeRecompense, dateExpiration, idUtilisateur);
     }
 
-    // toString for easy debugging
+    // toString() Method
     @Override
     public String toString() {
         return "RecompenseFidelite{" +
@@ -107,6 +113,7 @@ public class RecompenseFidelite {
                 ", pointsRequis=" + pointsRequis +
                 ", typeRecompense='" + typeRecompense + '\'' +
                 ", dateExpiration=" + dateExpiration +
+                ", idUtilisateur=" + idUtilisateur +
                 '}';
     }
 }

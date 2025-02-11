@@ -6,6 +6,7 @@ import esprit.tn.services.RecompenseFideliteService;
 import esprit.tn.services.UtilisateurFideliteService;
 
 import java.sql.Timestamp;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
@@ -102,20 +103,57 @@ public class Main {
                     String nomRecompense = scanner.nextLine();
                     System.out.print("Description: ");
                     String description = scanner.nextLine();
-                    System.out.print("Points Requis: ");
-                    int pointsRequis = scanner.nextInt();
-                    System.out.print("Type Recompense: ");
-                    scanner.nextLine(); // Consume newline
-                    String typeRecompense = scanner.nextLine();
-                    System.out.print("Date Expiration (YYYY-MM-DD HH:MM:SS): ");
-                    String dateExp = scanner.nextLine();
+                    int pointsRequis = 0;
 
-                    RecompenseFidelite newRecompense = new RecompenseFidelite(
-                            recompenseId, nomRecompense, description, pointsRequis,
-                            typeRecompense, Timestamp.valueOf(dateExp + ":00")
-                    );
-                    recompenseService.ajouter(newRecompense);
-                    System.out.println("Recompense added!");
+                    // Validate integer input for Points Requis
+                    while (true) {
+                        try {
+                            System.out.print("Points Requis: ");
+                            pointsRequis = scanner.nextInt();
+                            break;  // Exit loop if valid input is provided
+                        } catch (InputMismatchException e) {
+                            System.out.println("Invalid input. Please enter a valid integer for Points Requis.");
+                            scanner.nextLine();  // Clear the buffer
+                        }
+                    }
+
+                    scanner.nextLine(); // Consume newline
+                    System.out.print("Type Recompense: ");
+                    String typeRecompense = scanner.nextLine();
+
+                    // Validate Date Expiration
+                    String dateExp = "";
+                    while (true) {
+                        System.out.print("Date Expiration (YYYY-MM-DD HH:MM:SS): ");
+                        dateExp = scanner.nextLine();
+                        // Check if the format is correct
+                        if (dateExp.matches("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}")) {
+                            break;
+                        } else {
+                            System.out.println("Invalid date format. Please use YYYY-MM-DD HH:MM:SS.");
+                        }
+                    }
+
+                    // Ask for the idUtilisateur
+                    System.out.print("Enter Utilisateur ID for this Recompense: ");
+                    int idUtilisateur = scanner.nextInt();
+
+                    // Check if the Utilisateur exists
+                    UtilisateurFidelite user = utilisateurService.getOneById(idUtilisateur);  // Rename the variable
+                    if (user != null) {
+                        try {
+                            RecompenseFidelite newRecompense = new RecompenseFidelite(
+                                    recompenseId, nomRecompense, description, pointsRequis,
+                                    typeRecompense, Timestamp.valueOf(dateExp), idUtilisateur
+                            );
+                            recompenseService.ajouter(newRecompense);
+                            System.out.println("Recompense added!");
+                        } catch (IllegalArgumentException e) {
+                            System.out.println("Error: Invalid date format.");
+                        }
+                    } else {
+                        System.out.println("Utilisateur with ID " + idUtilisateur + " does not exist. Cannot add Recompense.");
+                    }
                     break;
 
                 case 5:

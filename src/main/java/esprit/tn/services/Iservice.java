@@ -8,4 +8,5 @@ public interface Iservice<T> {
     void supprimer(int id);
     List<T> getAll();
     T getOneById(int id);
+    List<T> search(String keyword);  // Added search method
 }
